@@ -1,0 +1,22 @@
+import allure
+import pytest
+import copy
+from helpers import OrdersApi
+from data import ORDER_PAYLOAD
+
+orders_api = OrdersApi()
+
+class TestCreateOrder:
+
+    @allure.title("Создание заказа с разными цветами")
+    @pytest.mark.parametrize("colors", [["BLACK"], ["GREY"], ["BLACK", "GREY"], []])
+    def test_create_order_with_colors(self, colors):
+        payload = copy.deepcopy(ORDER_PAYLOAD)
+        payload["color"] = colors
+        response = orders_api.create(payload)
+        
+        assert response.status_code == 201
+        assert "track" in response.json()
+        
+        track = response.json()["track"]
+        orders_api.cancel(track)
