@@ -19,3 +19,18 @@ def courier():
     if login_response.status_code == 200:
         courier_id = login_response.json().get("id")
         courier_api.delete(courier_id)
+
+@pytest.fixture
+def courier_data_for_creation():
+    
+    payload = get_random_courier_data()
+    
+    yield payload
+    
+    login_response = courier_api.login({
+        "login": payload["login"], 
+        "password": payload["password"]
+    })
+    if login_response.status_code == 200:
+        courier_id = login_response.json().get("id")
+        courier_api.delete(courier_id)
