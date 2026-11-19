@@ -1,17 +1,21 @@
 import pytest
-from helpers import get_random_courier_data, create_courier, login_courier, delete_courier
+from helpers import get_random_courier_data, CourierApi
+from data import ORDER_PAYLOAD
+import copy
+
+courier_api = CourierApi()
 
 @pytest.fixture
 def courier():
     payload = get_random_courier_data()
-    create_courier(payload)
+    courier_api.create(payload)
     
     yield payload
     
-    login_response = login_courier({
+    login_response = courier_api.login({
         "login": payload["login"], 
         "password": payload["password"]
     })
     if login_response.status_code == 200:
         courier_id = login_response.json().get("id")
-        delete_courier(courier_id)
+        courier_api.delete(courier_id)

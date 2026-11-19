@@ -5,6 +5,7 @@ from data import BASE_URL
 class TestGetOrders:
 
     @allure.title("Получение списка заказов")
+    @allure.step("Запрос списка заказов")
     def test_get_orders(self):
         response = requests.get(f"{BASE_URL}/api/v1/orders")
         
